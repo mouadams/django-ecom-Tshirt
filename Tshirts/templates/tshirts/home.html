@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Football T-shirts Catalog</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-900 text-gray-100 font-sans">
+
+    <header class="bg-gradient-to-r from-blue-800 to-indigo-900 py-10 text-center shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
+            <!-- Logo/Title -->
+            <div>
+                <h1 class="text-4xl font-extrabold text-white">Football T-shirt Collection</h1>
+                <p class="text-lg mt-1 text-gray-300">Pick your favorite football club's T-shirt</p>
+            </div>
+    
+            <!-- Right Side: Buttons or User Dropdown -->
+            <div>
+                {% if logged_in %}
+                <div class="relative">
+                    <!-- User Info -->
+                    <button id="user-menu-button" class="flex items-center space-x-2 bg-gray-800 text-white px-4 py-2 rounded-lg shadow-md hover:bg-gray-900">
+                        <span>{{ user.email }}</span>
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+    
+                    <!-- Dropdown Menu -->
+                    <div id="user-menu" class="hidden absolute right-0 mt-2 w-48 bg-gray-700 text-white rounded-lg shadow-lg">
+                        <a href="{% url 'add_product' %}" class="block px-4 py-2 hover:bg-gray-600">Add New T-shirt</a>
+                        <a href="{% url 'Logout' %}" class="block px-4 py-2 text-red-500 hover:bg-gray-600 hover:text-red-400">Logout</a>
+                    </div>
+                </div>
+                {% else %}
+                <!-- Login/Register Buttons -->
+                <div class="flex space-x-4">
+                    <a href="{% url 'Login' %}" class="px-6 py-2 bg-gray-800 text-white rounded-lg shadow-md hover:bg-gray-900">Login</a>
+                    <a href="{% url 'Register' %}" class="px-6 py-2 bg-gray-800 text-white rounded-lg shadow-md hover:bg-gray-900">Register</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+    
+    <!-- JavaScript for Dropdown -->
+    <script>
+        const userMenuButton = document.getElementById('user-menu-button');
+        const userMenu = document.getElementById('user-menu');
+    
+        userMenuButton.addEventListener('click', () => {
+            userMenu.classList.toggle('hidden');
+        });
+    </script>
+    <!-- Main Content Section -->
+    <main class="max-w-7xl mx-auto p-6 mt-10 bg-gray-900 rounded-lg shadow-lg">
+        <h2 class="text-3xl font-extrabold text-gray-100 text-center mb-10">Explore Our Football T-shirts</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            <!-- Loop through football t-shirts -->
+            {% for tshirt in tshirts %}
+            <div class="group relative bg-gray-800 rounded-lg shadow-lg overflow-hidden hover:shadow-2xl transition-shadow duration-200">
+                <!-- Product Image -->
+                <div class="relative bg-gray-700">
+                    <img src="{{ tshirt.image }}" alt="{{ tshirt.name }}" class="w-full h-64 object-cover object-center">
+                    <div class="absolute inset-0 bg-gradient-to-b from-transparent to-black opacity-0 group-hover:opacity-60 transition duration-300"></div>
+                    <span class="absolute top-2 left-2 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full">New</span>
+                </div>
+            
+                <!-- Product Details -->
+                <div class="p-6">
+                    <h2 class="text-2xl font-semibold text-gray-100 group-hover:text-green-400 transition duration-200">{{ tshirt.name }}</h2>
+                    <p class="text-gray-400 mt-2">{{ tshirt.description }}</p>
+            
+                    <!-- Price and Product Link -->
+                    <div class="flex justify-between items-center mt-6">
+                        <span class="text-2xl font-bold text-green-400">${{ tshirt.price }}</span>
+                        <a href="{% url 'product_detail' tshirt.name %}" 
+                        class="py-2 px-4 bg-gray-700 text-white font-semibold rounded-lg shadow-md hover:bg-gray-600 transform hover:scale-105 transition duration-200 ease-in-out">
+                            Product Details
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </main>
+    
+    
+    <!-- Footer Section -->
+    {% include 'tshirts/footer.html' %}
+
+</body>
+
+</html>
