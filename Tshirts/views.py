@@ -21,12 +21,22 @@ collection = db['tshirts']
 
 
 def tshirts_view(request):
-    # Fetch all documents from the 'fruitss' collection
-    tshirts = get_tshirts_ecom() 
+    query = request.GET.get("q", "")  # Get the search query from the request
     logged_in = request.session.get("logged_in")
     user = request.session.get("user")
-    return render(request, 'tshirts/home.html', {'tshirts': tshirts,'logged_in': logged_in ,'user': user})
- # Fetch all fruits from MongoDB
+
+    if query:
+        # Search by name or description (case-insensitive)
+        tshirts = collection.find({
+            "$or": [
+                {"name": {"$regex": query, "$options": "i"}},
+                
+            ]
+        })
+    else:
+        tshirts = collection.find()  # If no search query, fetch all products
+
+    return render(request, 'tshirts/home.html', {'tshirts': tshirts, 'logged_in': logged_in, 'user': user})
 
 
 
@@ -98,25 +108,3 @@ def delete_product_view(request, name):
 
 
 
-def add_to_cart(request, name):
-    # Get the product by name
-    product = collection.find_one({"name": name})
-
-    if not product:
-        messages.error(request, "Product not found.")
-        return redirect("home")
-
-    # Convert ObjectId to string
-    product["_id"] = str(product["_id"])
-
-    # Initialize the cart if it doesn't exist
-    if "cart" not in request.session:
-        request.session["cart"] = []
-
-    # Add the product to the cart
-    cart = request.session["cart"]
-    cart.append(product)
-    request.session["cart"] = cart
-
-    messages.success(request, f"{product['name']} has been added to your cart.")
-    return redirect("home")

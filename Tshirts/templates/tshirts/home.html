@@ -10,21 +10,42 @@
 </head>
 
 <body class="bg-gray-900 text-gray-100 font-sans">
-
-    <header class="bg-gradient-to-r from-blue-800 to-indigo-900 py-10 text-center shadow-lg">
-        <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
+    <header class="bg-gradient-to-r from-blue-900 via-blue-800 to-indigo-900 py-8 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col lg:flex-row justify-between items-center space-y-4 lg:space-y-0">
             <!-- Logo/Title -->
-            <div>
-                <h1 class="text-4xl font-extrabold text-white">Football T-shirt Collection</h1>
-                <p class="text-lg mt-1 text-gray-300">Pick your favorite football club's T-shirt</p>
+            <div class="text-center lg:text-left">
+                <h1 class="text-4xl lg:text-5xl font-extrabold text-white drop-shadow-md">
+                    Football T-shirt Collection
+                </h1>
+                <p class="text-lg mt-2 text-gray-300">
+                    Pick your favorite football club's T-shirt
+                </p>
             </div>
     
-            <!-- Right Side: Buttons or User Dropdown -->
+            <!-- Search Bar -->
+            <form method="GET" action="{% url 'home' %}" class="flex-grow max-w-lg w-full lg:mx-10">
+                <div class="relative">
+                    <input 
+                        type="text" 
+                        name="q" 
+                        placeholder="Search for products..." 
+                        value="{{ request.GET.q }}" 
+                        class="w-full px-4 py-2 rounded-full border border-gray-600 bg-gray-800 text-gray-100 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    >
+                    <button 
+                        type="submit" 
+                        class="absolute right-1 top-1/2 transform -translate-y-1/2 px-4 py-2 bg-blue-500 text-white font-semibold rounded-full hover:bg-blue-600 transition duration-200">
+                        Search
+                    </button>
+                </div>
+            </form>
+    
+            <!-- Right Side: User Menu or Auth Dropdown -->
             <div>
                 {% if logged_in %}
                 <div class="relative">
                     <!-- User Info -->
-                    <button id="user-menu-button" class="flex items-center space-x-2 bg-gray-800 text-white px-4 py-2 rounded-lg shadow-md hover:bg-gray-900">
+                    <button id="user-menu-button" class="flex items-center space-x-2 bg-gray-800 text-white px-4 py-2 rounded-full shadow-md hover:bg-gray-900">
                         <span>{{ user.email }}</span>
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path>
@@ -32,21 +53,31 @@
                     </button>
     
                     <!-- Dropdown Menu -->
-                    <div id="user-menu" class="hidden absolute right-0 mt-2 w-48 bg-gray-700 text-white rounded-lg shadow-lg">
+                    <div id="user-menu" class="hidden absolute right-0 mt-2 w-48 bg-gray-700 text-white rounded-lg shadow-lg z-10">
                         <a href="{% url 'add_product' %}" class="block px-4 py-2 hover:bg-gray-600">Add New T-shirt</a>
                         <a href="{% url 'Logout' %}" class="block px-4 py-2 text-red-500 hover:bg-gray-600 hover:text-red-400">Logout</a>
                     </div>
                 </div>
                 {% else %}
-                <!-- Login/Register Buttons -->
+               
+            
+                  
+    
                 <div class="flex space-x-4">
-                    <a href="{% url 'Login' %}" class="px-6 py-2 bg-gray-800 text-white rounded-lg shadow-md hover:bg-gray-900">Login</a>
-                    <a href="{% url 'Register' %}" class="px-6 py-2 bg-gray-800 text-white rounded-lg shadow-md hover:bg-gray-900">Register</a>
+                    <a href="{% url 'Login' %}" class="px-6 py-2 bg-gray-800 text-white font-semibold rounded-full shadow-md hover:bg-gray-900 transition duration-200">
+                        Login
+                    </a>
+                    <a href="{% url 'Register' %}" class="px-6 py-2 bg-gray-800 text-white font-semibold rounded-full shadow-md hover:bg-gray-900 transition duration-200">
+                        Register
+                    </a>
                 </div>
+               
                 {% endif %}
             </div>
         </div>
     </header>
+    
+    
     
     <!-- JavaScript for Dropdown -->
     <script>
@@ -86,6 +117,8 @@
                     </div>
                 </div>
             </div>
+                {% empty %}
+                    <p class="text-3xl font-extrabold text-gray-200 text-center mb-10">No products found.</p>
             {% endfor %}
         </div>
     </main>
